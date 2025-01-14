@@ -1,0 +1,11 @@
+[[rules]]
+id = "aws_api_key"
+description = "AWS API Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+secret_group = 1
+
+[[rules]]
+id = "generic_token"
+description = "Token"
+regex = '''[a-zA-Z0-9]{10,}'''
+secret_group = 0
