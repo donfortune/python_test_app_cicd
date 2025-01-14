@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 #dummy api key
 api_key = 'AKIAIOSFODNN7EXAMPLE'
+TOKEN='excrwbejknmemenbjknle.,rnmfrnemnrlkfmrmf,n.,erjm e,nt,'
 
 @app.route('/')
 def home():
