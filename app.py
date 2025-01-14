@@ -3,7 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 #dummy api key
-api_key = '123456'
+api_key = 'AKIAIOSFODNN7EXAMPLE'
 
 @app.route('/')
 def home():
