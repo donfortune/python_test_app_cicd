@@ -2,6 +2,9 @@ from flask import Flask
 
 app = Flask(__name__)
 
+#dummy api key
+api_key = '123456'
+
 @app.route('/')
 def home():
     return "Welcome to the Simple Flask App for DefectDojo!"
