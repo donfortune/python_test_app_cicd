@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/donfortune/python_test_app_cicd.git/']])
+            }
+        }
+        stage('Setup') {
+            steps {
+                sh 'python3 -m venv venv'
+                sh '. venv/bin/activate && pip install -r requirements.txt && pip install safety'
+            }
+        }
+        stage('Scan Code with Gitleaks') {
+            steps {
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh '/usr/local/bin/docker pull zricethezav/gitleaks:latest'
+                        sh '/usr/local/bin/docker run --rm -v $WORKSPACE:/code zricethezav/gitleaks:latest detect --source="/code" --verbose --report-format=json --report-path="/code/gitleaks-report.json"'
+                    }
+                    archiveArtifacts artifacts: 'gitleaks-report.json', allowEmptyArchive: true
+                }
+            }
+        }
+        stage('Upload Gitleaks Report to DefectDojo') {
+            steps {
+                withCredentials([string(credentialsId: 'defectdojo-api-token', variable: 'API_TOKEN')]) {
+                    script {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            sh '''
+                            curl -X POST https://demo.defectdojo.org/api/v2/import-scan/ \
+                                -H "Authorization: Token ${API_TOKEN}" \
+                                -F 'scan_type=Gitleaks Scan' \
+                                -F 'active=true' \
+                                -F 'verified=true' \
+                                -F 'engagement=14' \
+                                -F "file=@gitleaks-report.json"
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        stage('Scan for Dependency Vulnerabilities') {
+            steps {
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh '. venv/bin/activate && safety check --json --full-report > safety-report.json'
+                    }
+                    archiveArtifacts artifacts: 'safety-report.json', allowEmptyArchive: true
+                }
+            }
+        }
+    }
+}
