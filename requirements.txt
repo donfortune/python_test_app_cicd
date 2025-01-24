@@ -1,11 +1,11 @@
-blinker==1.9.0
-click==8.1.8
-Flask==3.1.0
-itsdangerous==2.2.0
-Jinja2==3.1.5
-MarkupSafe==3.0.2
-Werkzeug==3.1.3
-Flask==1.0  # Outdated Flask version with vulnerabilities
+# blinker==1.9.0
+# click==8.1.8
+# Flask==3.1.0
+# itsdangerous==2.2.0
+# Jinja2==3.1.5
+# MarkupSafe==3.0.2
+# Werkzeug==3.1.3
+Flask==1.0  # Vulnerable Flask version
 urllib3==1.25.2  # Known vulnerabilities in older versions of urllib3
-Jinja2==2.10  # Jinja2 versions <2.11.3 have vulnerabilities
-Django==2.2  # Example of another vulnerable package
+Jinja2==2.10  # Vulnerable Jinja2 version
+Django==2.2  # Vulnerable Django version
