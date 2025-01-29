@@ -10,7 +10,7 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'python3 -m venv venv'
-                sh '. venv/bin/activate && pip install -r requirements.txt && pip install safety'
+                sh '. venv/bin/activate && pip install -r requirements.txt && pip install safety pip-audit'
             }
         }
         stage('Scan Code with Gitleaks') {
@@ -47,7 +47,8 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh '. venv/bin/activate && safety check --json --full-report > safety-report.json'
+                        // sh '. venv/bin/activate && safety check --json --full-report > safety-report.json'
+                        sh '. venv/bin/activate && pip-audit -f json > safety-report.json'
                     }
                     archiveArtifacts artifacts: 'safety-report.json', allowEmptyArchive: true
                 }
@@ -68,6 +69,15 @@ pipeline {
                                 -F "file=@safety-report.json"
                             '''
                         }
+                    }
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'docker build -t python-test-app-cicd .'
                     }
                 }
             }
