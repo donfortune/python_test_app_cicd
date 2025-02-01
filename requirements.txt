@@ -5,7 +5,12 @@
 # Jinja2==3.1.5
 # MarkupSafe==3.0.2
 # Werkzeug==3.1.3
-Flask==1.0  # Vulnerable Flask version
-urllib3==1.25.2  # Known vulnerabilities in older versions of urllib3
-Jinja2==2.10  # Vulnerable Jinja2 version
-Django==2.2  # Vulnerable Django version
+# Flask==1.0  # Vulnerable Flask version
+# urllib3==1.25.2  # Known vulnerabilities in older versions of urllib3
+# Jinja2==2.10  # Vulnerable Jinja2 version
+# Django==2.2  # Vulnerable Django version
+
+Flask==2.2.5  # Secure and supported Flask version
+urllib3==1.26.16  # Latest urllib3 with security fixes
+Jinja2==3.1.2  # Secure Jinja2 version
+Django==4.2  # LTS Django version (upgrade to 5.x if possible)
