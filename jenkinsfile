@@ -77,7 +77,17 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'docker build -t python-test-app-cicd .'
+                        sh '/usr/local/bin/docker build -t donfortune1/python-test-app-cicd:1.0 .'
+                    }
+                }
+            }
+        }
+        stage('Scan Docker Image with Trivy') {
+            steps {
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh '/usr/local/bin/docker pull aquasec/trivy:latest'
+                        sh '/usr/local/bin/docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $WORKSPACE:/root/.cache/ aquasec/trivy:latest donfortune1/python-test-app-cicd:1.0'
                     }
                 }
             }
